@@ -2,7 +2,7 @@ var rocket;
 var population;
 var lifespan = 400;
 var count = 0;
-var gen = 0;
+var gen = 1;
 var saude;
 
 var target;
@@ -11,9 +11,9 @@ var lifeP;
 var genP;
 
 function setup() {
-	createCanvas(400, 400);
-	lifeP = createP();
+	createCanvas(1000, 500);
 	genP = createP();
+	lifeP = createP();
 	population = new Population();
 	target = createVector(width/2, 50);
 }
@@ -21,14 +21,15 @@ function setup() {
 function draw() {
 	background(0);
 	population.run();
+	genP.html("Geração: "  + gen);
 	lifeP.html(count);
-	genP.html(gen);
 	count++;
 	
 	if(count == lifespan) {
 		population.evaluate();
 		population.selection();	
 		count = 0;
+		acertos = 0;
 		gen++;
 	}
 
@@ -68,7 +69,7 @@ function DNA(genes) {
 
 	this.mutation = function() {
 		for(var i = 0; i < this.genes.length; i++) {
-			if(random(1) < 0.01) {
+			if(random(1) < 0.02) {
 				this.genes[i] = p5.Vector.random2D();
 				this.genes[i].setMag(0.1);
 
@@ -145,7 +146,7 @@ function Population() {
 
 var minTemp = lifespan + 1;
 function Rocket(dna) {
-	this.pos = createVector(width/2, height);
+	this.pos = createVector(width/2, height - 100);
 	this.vel = createVector();
 	this.acc = createVector();
 	this.completed = false;
@@ -168,8 +169,12 @@ function Rocket(dna) {
 		this.fitness = map(d, 0, width, width, 0);
 
 		if(this.completed) {
-			this.fitness *= 1.5;	
+			this.fitness *= 10;	
+		} else {
+			this.fitness *= 0.9;
 		}
+
+
 
 		/*if(this.temp < minTemp) {
 			this.fitness *= 1.5;
